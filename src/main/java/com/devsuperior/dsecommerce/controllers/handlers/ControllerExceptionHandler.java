@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.devsuperior.dsecommerce.dto.CustomError;
+import com.devsuperior.dsecommerce.services.expections.DatabaseExpection;
 import com.devsuperior.dsecommerce.services.expections.ResourceNotFoundExpection;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,5 +21,12 @@ public class ControllerExceptionHandler {
 		HttpStatus status = HttpStatus.NOT_FOUND; 
 		CustomError err = new  CustomError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
+	}
+	
+	@ExceptionHandler(DatabaseExpection.class)
+	public ResponseEntity<CustomError> database(DatabaseExpection e, HttpServletRequest request) {
+		HttpStatus status = HttpStatus.BAD_REQUEST; 
+		CustomError err = new  CustomError(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);	
 	}
 }
