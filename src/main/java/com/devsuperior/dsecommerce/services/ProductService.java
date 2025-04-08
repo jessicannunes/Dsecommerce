@@ -16,28 +16,26 @@ import com.devsuperior.dsecommerce.services.expections.ResourceNotFoundExpection
 
 import jakarta.persistence.EntityNotFoundException;
 
-
 @Service
 public class ProductService {
-	
+
 	@Autowired
 	private ProductRepository repository;
-	
-	
+
 	@Transactional(readOnly = true)
 	public ProductDTO findById(Long id) {
 		Product product = repository.findById(id)
-				.orElseThrow(()-> new ResourceNotFoundExpection("Recurso não encontrado"));
+				.orElseThrow(() -> new ResourceNotFoundExpection("Recurso não encontrado"));
 		return new ProductDTO(product);
-		
+
 	}
-	
+
 	@Transactional(readOnly = true)
-	public Page<ProductDTO> findAll(Pageable pageable){
-		Page<Product> result = repository.findAll(pageable);
+	public Page<ProductDTO> findAll(String name, Pageable pageable) {
+		Page<Product> result = repository.searchByName(name, pageable);
 		return result.map(x -> new ProductDTO(x));
 	}
-	
+
 	@Transactional
 	public ProductDTO insert(ProductDTO dto) {
 		Product entity = new Product();
@@ -45,44 +43,41 @@ public class ProductService {
 		entity = repository.save(entity);
 		return new ProductDTO(entity);
 	}
-	
+
 	@Transactional
 	public ProductDTO upload(Long id, ProductDTO dto) {
-		
+
 		try {
 			Product entity = repository.getReferenceById(id);
 			copyDtoToEntity(dto, entity);
 			entity = repository.save(entity);
 			return new ProductDTO(entity);
-		}
-		catch(EntityNotFoundException e){
+		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundExpection("Recurso não encontrato");
 		}
-		
+
 	}
-	
+
 	@Transactional(propagation = Propagation.SUPPORTS)
 	public void delete(Long id) {
-		
+
 		if (!repository.existsById(id)) {
 			throw new ResourceNotFoundExpection("Recurso não encontrado");
 		}
 		try {
-	        	repository.deleteById(id);    		
+			repository.deleteById(id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseExpection("Falha de integridade referencial");
 		}
-	    catch (DataIntegrityViolationException e) {
-	        	throw new DatabaseExpection("Falha de integridade referencial");
-	   	}
-		
+
 	}
-	
+
 	private void copyDtoToEntity(ProductDTO dto, Product entity) {
 		entity.setName(dto.getName());
 		entity.setDescription(dto.getDescription());
 		entity.setImgUrl(dto.getImgUrl());
 		entity.setPrice(dto.getPrice());
-		
+
 	}
-	
 
 }
