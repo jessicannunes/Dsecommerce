@@ -8,6 +8,7 @@ import com.devsuperior.dscommerce.entities.Product;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
@@ -23,12 +24,12 @@ public class ProductDTO {
 	@NotBlank(message = "Campo requerido")
 	private String description;
 
+	@NotNull(message = "O Preço deve ser positivo")
 	@Positive(message = "O preço deve ser positivo")
 	private Double price;
-
 	private String imgUrl;
 
-	@NotEmpty(message="Deve ter ao menos 1 categoria")
+	@NotEmpty(message = "Deve ter ao menos 1 categoria")
 	private List<CategoryDTO> categories = new ArrayList<>();
 
 	public ProductDTO() {
@@ -48,7 +49,7 @@ public class ProductDTO {
 		description = entity.getDescription();
 		price = entity.getPrice();
 		imgUrl = entity.getImgUrl();
-		for(Category cat: entity.getCategories()) {
+		for (Category cat : entity.getCategories()) {
 			categories.add(new CategoryDTO(cat));
 		}
 	}
