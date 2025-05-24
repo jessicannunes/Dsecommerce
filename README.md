@@ -43,8 +43,8 @@ Durante o desenvolvimento deste projeto, foram abordados os seguintes tópicos f
 
 ## 🛠️ Tecnologias Utilizadas
 
-- Java 21+
-- Spring Boot 3.x
+- Java 21
+- Spring Boot 
 - Spring Data JPA
 - Spring Security
 - H2 Database (dev)
