@@ -3,6 +3,7 @@ package com.devsuperior.dscommerce.dto;
 import com.devsuperior.dscommerce.entities.Category;
 
 public class CategoryDTO {
+	
 	private Long id;
 	private String name;
 	
